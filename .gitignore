@@ -1,0 +1,17 @@
+*Rproj
+.Rproj.user
+.DS_Store
+*/.DS_Store
+.Rhistory
+results
+results2
+results3
+results4
+Figures
+Results
+all_analysis_results.rds
+chunks
+new_results.rds
+results_old.rds
+new_results.rds
+testing.RData
