@@ -1,9 +1,59 @@
 rm(list = ls())
 #results_old <- readRDS("results_old.rds")
 #model <- results_old$`overlap2-large-weak`
-results_old <- readRDS("new_results.rds")
+results_old <- readRDS("results_new_2.rds")
 
+stop()
+all_analysis_results <- results_old
+# Initialize an empty list to store results
+converged_counts <- list()
 
+# Loop through each element (dataframe) in all_analysis_results
+for (name in names(all_analysis_results)) {
+  # Count the number of rows where converged is TRUE
+  num_converged_true <- sum(all_analysis_results[[name]]$converged_pxl == TRUE, na.rm = TRUE)
+  
+  # Store the result in the list with the name of the structure
+  converged_counts[[name]] <- num_converged_true
+}
+
+# Print the results for each structure
+for (name in names(converged_counts)) {
+  cat("Structure:", name, "- Number of converged = TRUE:", converged_counts[[name]], "\n")
+}
+
+# Initialize lists to store results
+iter_avg <- list()
+iter_pxl_avg <- list()
+iter_beta_avg <- list()
+
+# Loop through each element (dataframe) in all_analysis_results
+for (name in names(all_analysis_results)) {
+  # Compute the average of iter, ignoring NA values
+  avg_iter <- mean(all_analysis_results[[name]]$iter, na.rm = TRUE)
+  
+  # Compute the average of iter_pxl, ignoring NA values
+  avg_iter_pxl <- mean(all_analysis_results[[name]]$iter_pxl, na.rm = TRUE)
+  
+  # Compute the average of iter_beta, ignoring NA values
+  avg_iter_beta <- mean(all_analysis_results[[name]]$iter_beta, na.rm = TRUE)
+  
+  # Store the results in the lists
+  iter_avg[[name]] <- avg_iter
+  iter_pxl_avg[[name]] <- avg_iter_pxl
+  iter_beta_avg[[name]] <- avg_iter_beta
+}
+
+# Print the results for each structure
+for (name in names(iter_avg)) {
+  cat("Structure:", name, 
+      "- Average iter:", iter_avg[[name]], 
+      "- Average iter_pxl:", iter_pxl_avg[[name]], 
+      "- Average iter_beta:", iter_beta_avg[[name]], "\n")
+}
+
+stop()
+# Coverage ####
 model <- 
 
 # Get the size of the covariance matrix (assuming square)

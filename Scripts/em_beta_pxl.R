@@ -1,18 +1,17 @@
-# EM algorithm 
+# EM algorithm for a beta prior on theta
 source("Scripts/likelihood.R")
-source("Scripts/MCAR_Functions.R")
 
-em_pxl <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3, 
-               max_iter = 5000, ll = TRUE, PCA = FALSE){
-  
+em_beta_pxl <- function(Y, q, tol = 1e-3, max_iter = 50, simplified = TRUE, 
+                    ll = TRUE, PCA = FALSE){
   n <- nrow(Y)
   p <- ncol(Y)
   
   # initialise hyper parameters
   v0 <- 0.0025
-  # v0 <- e^(-6)
   v1 <- 10
   reg <- 1e-6
+  alpha <- 0.5
+  beta <- 0.5
   
   # Initialise parameters
   if (PCA) {
@@ -24,32 +23,15 @@ em_pxl <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3,
     # Random initialization
     B <- matrix(rnorm(p * q), p, q)
   }
+  
   PSI <- diag(p)
-  THETA <- matrix(0.5, p, q)
-  SIGMA_inverse <- matrix(rnorm(q * q), q, q)
+  THETA <- rep(0.5, q)
   
-  # MCAR functions
-  if (is.null(dim3)) {
-    # 2D case
-    Adj <- adjacency_matrix(dim1, dim2)
-    n_sj <- n_neighbors(dim1, dim2)
-    triangle <- upper_triangular(Adj, dim1 * dim2)
-  } else {
-    # 3D case
-    Adj <- adjacency_matrix(dim1, dim2, dim3)
-    n_sj <- n_neighbors(dim1, dim2, dim3)
-    triangle <- upper_triangular(Adj, dim1 * dim2 * dim3)
-  }
-  list_ind = list()
-  for(j in 1:p){
-    list_ind[[j]] = c(triangle$y[which(triangle$x == j, arr.ind = T)], 
-                      triangle$x[which(triangle$y == j, arr.ind = T)])
-  }
-  
+  # Log-likelihood to check convergence
   ll_old <- 0
   iter <- 0
   convergence <- FALSE
-  while (iter < max_iter && !convergence) {
+  while (iter <= max_iter && !convergence) {
     iter <- iter + 1
     
     # E-step
@@ -61,19 +43,15 @@ em_pxl <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3,
     # Calculate sum_E_zzt without looping
     sum_E_zzt <- var_zi * n + E_zt %*% t(E_zt)
     
-    # Update GAMMA and OMEGA
+    # Update GAMMA
     sqrt_v1 <- sqrt(v1)
     sqrt_v0 <- sqrt(v0)
-    
-    sigmoid_THETA <- sigmoid(THETA)
     dnorm_B_v1 <- dnorm(B, mean = 0, sd = sqrt_v1, log = FALSE)
     dnorm_B_v0 <- dnorm(B, mean = 0, sd = sqrt_v0, log = FALSE)
     
-    term1 <- dnorm_B_v1 * sigmoid_THETA
-    term2 <- dnorm_B_v0 * (1 - sigmoid_THETA)
-    
+    term1 <- dnorm_B_v1 * THETA
+    term2 <- dnorm_B_v0 * (1 - THETA)
     GAMMA <- term1 / (term1 + term2)
-    OMEGA <- 0.5 * THETA * tanh(THETA * 0.5)
     
     # M-step
     # Update B
@@ -97,19 +75,8 @@ em_pxl <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3,
     PSI <- diag((term1 + term2 + term3 + 1) / (n + 3))
     
     # Update THETA
-    for (j in 1:p) {
-      diag_omega <- diag(OMEGA[j, ])  # qxq
-      term1 <- solve(diag_omega + (n_sj[j] * SIGMA_inverse) + reg * diag(q))  # qxq
-      
-      neighbor_sum <- colSums(THETA[list_ind[[j]], ])
-      
-      THETA[j, ] <- t(term1 %*% ((GAMMA[j, ] - 1/2) + SIGMA_inverse %*% neighbor_sum))
-    }
-    
-    # Update SIGMA_inverse
-    difference_neighbours <- THETA[triangle$x, ] - THETA[triangle$y, ]
-    sum_matrix <- t(difference_neighbours) %*% difference_neighbours
-    SIGMA_inverse <- solve((diag(q) + sum_matrix + reg * diag(q)) / (p - 1))
+    sum_gammas <- colSums(GAMMA)  # Vectorized sum for each column
+    THETA <- (sum_gammas + alpha - 1) / (p + alpha + beta - 2)
     
     A <- var_zi + (E_zt %*% t(E_zt))/n
     B <- B %*% t(chol(A))
@@ -130,7 +97,6 @@ em_pxl <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3,
       cat("Iteration:", iter, "Log-Likelihood:", ll_old, "\n")
     }
   }
-  
   B_truncated <- B
   B_truncated[GAMMA < 0.5] <- 0
   
@@ -141,9 +107,9 @@ em_pxl <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3,
   Covariance_matrix_truncated <- B_truncated %*% t(B_truncated) + PSI
   
   return(list(B = B, B_truncated = B_truncated, PSI = PSI, GAMMA = GAMMA, 
-              GAMMA_truncated = GAMMA_truncated, SIGMA_inverse = SIGMA_inverse, 
+              GAMMA_truncated = GAMMA_truncated, 
               Covariance_matrix = Covariance_matrix, 
-              Covariance_matrix_truncated = Covariance_matrix_truncated, 
+              Covariance_matrix_truncated = Covariance_matrix_truncated,
               Z = t(E_zt), THETA = THETA, iter = iter, converged = convergence, 
               likelihood = ll_old))
 }

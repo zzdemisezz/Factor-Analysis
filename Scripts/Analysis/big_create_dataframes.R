@@ -35,6 +35,7 @@ for (subdir_path in subdir_paths) {
 }
 
 cat("Data processing complete. Results saved in", chunks_dir, "\n")
+stop()
 
 # Get the list of all saved .rds files
 rds_files <- list.files(chunks_dir, pattern = "^results_.*\\.rds$", full.names = TRUE)
@@ -56,6 +57,6 @@ for (rds_file in rds_files) {
 
 stop()
 # Save the combined result as a single .rds file
-saveRDS(all_analysis_results, file = "new_results.rds")
-test <- readRDS("new_results.rds")
+saveRDS(all_analysis_results, file = "new_results_2.rds")
+test <- readRDS("new_results_2.rds")
 cat("All individual results have been combined and saved as 'final_combined_results.rds'.\n")

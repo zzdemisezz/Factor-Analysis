@@ -2,13 +2,15 @@ rm(list = ls())
 source("Scripts/data_generation.R")
 source("Scripts/em.R")
 source("Scripts/em_beta.R")
-source("Scripts/run_em.R")
-source("Scripts/run_em_DPE.R")
+source("Scripts/em_beta_pxl.R")
 source("Scripts/em_pxl.R")
+source("Scripts/run_em.R")
 source("Scripts/em_pxl_DPE.R")
+source("Scripts/run_em_DPE.R")
+
 
 # set seed
-set.seed(12)
+set.seed(42)
 
 # Parameters
 n <- 500 
@@ -22,7 +24,7 @@ num_runs <- 1
 
 # Generate data
 # data <- generate_data_simple(n, dim1, dim2, q, "weak", TRUE)
-data <- generate_data(n, dim1, dim2, q, 5, corr = "strong", print_factors = TRUE)
+data <- generate_data(n, dim1, dim2, q, 5, corr = "strong", print_factors = FALSE)
 # data <- generate_data_2overlap(n, dim1, dim2, q, overlap = "big",
 #                                corr = "weak", print_factors = TRUE)
 # data <- generate_data_3overlap(n, dim1, dim2, q, overlap = "big",
@@ -32,8 +34,10 @@ data <- generate_data(n, dim1, dim2, q, 5, corr = "strong", print_factors = TRUE
 
 # output <- run_em_algorithm_DPE(em_pxl_DPE, data, q, dim1, dim2, tol = tol,
 #                                 max_iter = max_iter, ll = ll, num_runs = num_runs)
-output <- run_em_algorithm(em, data, q, dim1, dim2, tol = tol,
+output <- run_em_algorithm(em_pxl, data, q, dim1, dim2, tol = tol,
                                max_iter = max_iter, ll = ll, num_runs = num_runs)
+# output <- run_em_algorithm(em_beta_pxl, data, q, tol = tol,
+#                                 max_iter = max_iter, ll = ll, num_runs = num_runs)
 
 stop()
 # # check specific initilialisation
