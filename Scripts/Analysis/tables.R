@@ -56,8 +56,6 @@ summary_table_new <- create_summary_table(results_new)
 # Print the summary table
 round(summary_table_old,4)
 round(summary_table_new,4)
-print(summary_table_old)
-print(summary_table_new)
 stop()
 # Function to compare GAMMA to B_True for a given results list
 create_comparison_table <- function(results_list) {

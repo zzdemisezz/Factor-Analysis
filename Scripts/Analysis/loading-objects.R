@@ -13,16 +13,22 @@ load_data <- function(subdir_path) {
     B_truncated_matrix <- simulation_data[[i]]$all_results_em[[1]]$best_result$B_truncated
     GAMMA_truncated_matrix <- simulation_data[[i]]$all_results_em[[1]]$best_result$GAMMA_truncated
     Covariance_matrix <- simulation_data[[i]]$all_results_em[[1]]$best_result$Covariance_matrix_truncated
+    converged <- simulation_data[[i]]$all_results_em[[1]]$best_result$converged
+    iter <- simulation_data[[i]]$all_results_em[[1]]$best_result$iter
     
     # Extract matrices from all_results_em_beta
     B_beta <- simulation_data[[i]]$all_results_em_beta[[1]]$best_result$B_truncated
     GAMMA_beta <- simulation_data[[i]]$all_results_em_beta[[1]]$best_result$GAMMA_truncated
     Covariance_matrix_beta <- simulation_data[[i]]$all_results_em_beta[[1]]$best_result$Covariance_matrix_truncated
+    converged_beta <- simulation_data[[i]]$all_results_em_beta[[1]]$best_result$converged
+    iter_beta <- simulation_data[[i]]$all_results_em_beta[[1]]$best_result$iter
     
     # Extract matrices from all_results_em_pxl
     B_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$B_truncated
     GAMMA_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$GAMMA_truncated
     Covariance_matrix_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$Covariance_matrix_truncated
+    converged_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$converged
+    iter_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$iter
     
     # Extract true matrices
     B_True <- simulation_data[[i]]$all_datasets[[1]]$B_true
@@ -32,14 +38,20 @@ load_data <- function(subdir_path) {
       B = I(list(B_truncated_matrix)),
       GAMMA = I(list(GAMMA_truncated_matrix)),
       Covariance_matrix = I(list(Covariance_matrix)),
+      converged = converged,
+      iter = iter,
       
       B_beta = I(list(B_beta)),
       GAMMA_beta = I(list(GAMMA_beta)),
       Covariance_matrix_beta = I(list(Covariance_matrix_beta)),
+      converged_beta = converged_beta,
+      iter_beta = iter_beta,
       
       B_pxl = I(list(B_pxl)),
       GAMMA_pxl = I(list(GAMMA_pxl)),
       Covariance_matrix_pxl = I(list(Covariance_matrix_pxl)),
+      converged_pxl = converged_pxl,
+      iter_pxl = iter_pxl,
       
       B_True = I(list(B_True)),
       Covariance_matrix_true = I(list(Covariance_matrix_true)),
@@ -48,6 +60,7 @@ load_data <- function(subdir_path) {
     
     simulation_data_list[[i]] <- simulation_row
   }
+  
   
   result_dataframe <- do.call(rbind, simulation_data_list)
   

@@ -33,7 +33,27 @@ for (subdir_path in subdir_paths) {
   all_analysis_results[[dataset_name]] <- analysis_results
 }
 
-all_analysis_results <- readRDS("all_analysis_results.rds")
+stop()
+
+# Initialize an empty list to store results
+converged_counts <- list()
+
+# Loop through each element (dataframe) in all_analysis_results
+for (name in names(all_analysis_results)) {
+  # Count the number of rows where converged is TRUE
+  num_converged_true <- sum(all_analysis_results[[name]]$converged == TRUE, na.rm = TRUE)
+  
+  # Store the result in the list with the name of the structure
+  converged_counts[[name]] <- num_converged_true
+}
+
+# Print the results for each structure
+for (name in names(converged_counts)) {
+  cat("Structure:", name, "- Number of converged = TRUE:", converged_counts[[name]], "\n")
+}
+
+
+# all_analysis_results <- readRDS("all_analysis_results.rds")
 
 
 

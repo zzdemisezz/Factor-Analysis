@@ -30,10 +30,10 @@ data <- generate_data(n, dim1, dim2, q, 5, corr = "strong", print_factors = TRUE
 
 # View(data$cor_matrix)
 
-output <- run_em_algorithm_DPE(em_pxl_DPE, data, q, dim1, dim2, tol = tol,
-                                max_iter = max_iter, ll = ll, num_runs = num_runs)
-# output <- run_em_algorithm(em_pxl, data, q, dim1, dim2, tol = tol,
-#                                max_iter = max_iter, ll = ll, num_runs = num_runs)
+# output <- run_em_algorithm_DPE(em_pxl_DPE, data, q, dim1, dim2, tol = tol,
+#                                 max_iter = max_iter, ll = ll, num_runs = num_runs)
+output <- run_em_algorithm(em, data, q, dim1, dim2, tol = tol,
+                               max_iter = max_iter, ll = ll, num_runs = num_runs)
 
 stop()
 # # check specific initilialisation
