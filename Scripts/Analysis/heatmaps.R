@@ -2,11 +2,11 @@ rm(list = ls())
 source("Scripts/Analysis/functions.R")
 source("Scripts/Analysis/loading-objects.R")
 
-all_analysis_results <- readRDS("all_analysis_results.rds")
+all_analysis_results <- readRDS("results_new.rds")
 
 # Load the relevant dataframe
-#heatmap_dataframe <- all_analysis_results$`overlap2-large-weak`
-heatmap_dataframe <- all_analysis_results$`medium-weak`
+# heatmap_dataframe <- all_analysis_results$`5x5-weak`
+heatmap_dataframe <- all_analysis_results$`medium-moderate`
 
 # Calculate statistics for B_permuted and B_permuted_beta 
 statistics_em <- calculate_statistics(heatmap_dataframe, type = "em")

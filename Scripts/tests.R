@@ -20,7 +20,7 @@ dim2 <- 10
 max_iter <- 5000
 tol = 1e-2
 ll <- TRUE
-num_runs <- 1
+num_runs <- 10
 
 # Generate data
 # data <- generate_data_simple(n, dim1, dim2, q, "weak", TRUE)
@@ -34,10 +34,10 @@ data <- generate_data(n, dim1, dim2, q, 5, corr = "strong", print_factors = FALS
 
 # output <- run_em_algorithm_DPE(em_pxl_DPE, data, q, dim1, dim2, tol = tol,
 #                                 max_iter = max_iter, ll = ll, num_runs = num_runs)
-output <- run_em_algorithm(em_pxl, data, q, dim1, dim2, tol = tol,
-                               max_iter = max_iter, ll = ll, num_runs = num_runs)
-# output <- run_em_algorithm(em_beta_pxl, data, q, tol = tol,
-#                                 max_iter = max_iter, ll = ll, num_runs = num_runs)
+# output <- run_em_algorithm(em_pxl, data, q, dim1, dim2, tol = tol,
+#                                max_iter = max_iter, ll = ll, num_runs = num_runs)
+output <- run_em_algorithm(em_beta, data, q, tol = tol,
+                                max_iter = max_iter, ll = ll, num_runs = num_runs)
 
 stop()
 # # check specific initilialisation

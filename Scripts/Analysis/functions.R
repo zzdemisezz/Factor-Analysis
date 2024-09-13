@@ -99,6 +99,97 @@ create_factor_heatmap <- function(loadings_matrix, title = "True factors") {
   print(final_plot)
 }
 
+create_factor_heatmap_test <- function(loadings_matrix) {
+  library(ggplot2)
+  library(reshape2)
+  library(cowplot)
+  
+  # Split the loadings matrix into submatrices based on its dimensions
+  split_loadings_to_matrices <- function(loadings_matrix) {
+    n_rows <- nrow(loadings_matrix)
+    n_cols <- ncol(loadings_matrix)
+    
+    # Check if the number of rows is a perfect square
+    if (sqrt(n_rows) %% 1 != 0) {
+      stop("The number of rows in the matrix must be a perfect square (e.g., 100, 400).")
+    }
+    
+    # Calculate the dimension of the square submatrices
+    submatrix_size <- sqrt(n_rows)
+    
+    # Split the matrix into a list of submatrices
+    matrices_list <- list()
+    for (i in 1:n_cols) {
+      factor_column <- loadings_matrix[, i]
+      matrices_list[[i]] <- matrix(factor_column, nrow = submatrix_size, ncol = submatrix_size, byrow = FALSE)
+    }
+    
+    return(matrices_list)
+  }
+  
+  # Create a custom heatmap for one of the matrices (no legend or title)
+  create_custom_heatmap <- function(matrix_data, common_scale = NULL) {
+    ggplot(melt(matrix_data), aes(x = Var2, y = Var1, fill = value)) +
+      geom_tile(color = "gray") +  
+      scale_y_reverse() +  
+      scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, 
+                           limits = common_scale) +  # Use the common scale for the fill
+      theme_minimal() +
+      theme(
+        legend.position = "none",  # No legend
+        aspect.ratio = 1,  
+        axis.title = element_blank(),  
+        axis.text = element_blank(),   
+        axis.ticks = element_blank(),  
+        panel.grid = element_blank(),  
+        plot.margin = margin(0, 0, 0, 0) 
+      ) +
+      coord_fixed()  
+  }
+  
+  # Split the loadings matrix into submatrices
+  split_matrices <- split_loadings_to_matrices(loadings_matrix)
+  
+  # Calculate the common scale (min and max values across all matrices)
+  common_scale <- range(unlist(split_matrices))
+  
+  # Create heatmaps for the first three matrices using the common scale
+  factor1 <- create_custom_heatmap(split_matrices[[1]], common_scale = common_scale)
+  factor2 <- create_custom_heatmap(split_matrices[[2]], common_scale = common_scale)
+  factor3 <- create_custom_heatmap(split_matrices[[3]], common_scale = common_scale)
+  
+  # Create a heatmap for the entire loadings matrix (no legend or title)
+  heatmap_all <- ggplot(melt(loadings_matrix), aes(x = Var2, y = Var1, fill = value)) +
+    geom_tile(color = "gray") +  
+    scale_y_reverse() +  
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +  
+    theme_minimal() +
+    theme(
+      legend.position = "none",  # No legend
+      aspect.ratio = 1,  
+      axis.title = element_blank(),  
+      axis.text = element_blank(),   
+      axis.ticks = element_blank(),  
+      panel.grid = element_blank(),  
+      plot.margin = margin(0, 0, 0, 0) 
+    ) +
+    coord_fixed()
+  
+  # Combine the three factor heatmaps and the full loading matrix side by side
+  final_plot <- plot_grid(
+    factor1, factor2, factor3, heatmap_all,
+    ncol = 4, align = "h", axis = "tb"
+  )
+  
+  # Print the final plot
+  print(final_plot)
+}
+
+
+
+
+
+
 # Function to create a heatmap with the correct orientation
 create_heatmap <- function(matrix_data, title = "Heatmap", x_label = "Factors", y_label = "Loadings") {
   

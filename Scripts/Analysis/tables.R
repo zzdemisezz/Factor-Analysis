@@ -3,7 +3,7 @@ source("Scripts/Analysis/functions.R")
 library(dplyr)
 
 results_old <- readRDS("results_old.rds")
-results_new <- readRDS("new_results.rds")
+results_new <- readRDS("results_new.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {
