@@ -1,12 +1,11 @@
-rm(list = ls())
 source("Scripts/Analysis/functions.R")
 source("Scripts/Analysis/loading-objects.R")
 
 # Specifying the directory results
-main_dir <- "Results/results_complex"
+main_dir <- "/well/nichols/users/rht383/results_complex_2"
 
 # Specify the directory where the result chunks will be saved
-chunks_dir <- "chunks/complex-2/"
+chunks_dir <- "/well/nichols/users/rht383/chunks"
 
 generate_subdir_paths <- function(main_dir) {
   # List all subdirectories under the main directory
@@ -35,7 +34,6 @@ for (subdir_path in subdir_paths) {
 }
 
 cat("Data processing complete. Results saved in", chunks_dir, "\n")
-stop()
 
 # Get the list of all saved .rds files
 rds_files <- list.files(chunks_dir, pattern = "^results_.*\\.rds$", full.names = TRUE)
@@ -55,8 +53,7 @@ for (rds_file in rds_files) {
   all_analysis_results[[dataset_name]] <- analysis_result
 }
 
-stop()
 # Save the combined result as a single .rds file
-saveRDS(all_analysis_results, file = "new_results_2.rds")
-test <- readRDS("new_results_2.rds")
-cat("All individual results have been combined and saved as 'final_combined_results.rds'.\n")
+saveRDS(all_analysis_results, file = "/well/nichols/users/rht383/dataframes/results_beta_pxl.rds")
+# test <- readRDS("new_results_2.rds")
+# cat("All individual results have been combined and saved as 'final_combined_results.rds'.\n")
