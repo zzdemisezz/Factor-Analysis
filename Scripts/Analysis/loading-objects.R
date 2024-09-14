@@ -30,6 +30,13 @@ load_data <- function(subdir_path) {
     converged_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$converged
     iter_pxl <- simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$iter
     
+    # Extract matrices from all_results_em_beta_pxl
+    B_beta_pxl <- simulation_data[[i]]$all_results_em_beta_pxl[[1]]$best_result$B_truncated
+    GAMMA_beta_pxl <- simulation_data[[i]]$all_results_em_beta_pxl[[1]]$best_result$GAMMA_truncated
+    Covariance_matrix_beta_pxl <- simulation_data[[i]]$all_results_em_beta_pxl[[1]]$best_result$Covariance_matrix_truncated
+    converged_beta_pxl <- simulation_data[[i]]$all_results_em_beta_pxl[[1]]$best_result$converged
+    iter_beta_pxl <- simulation_data[[i]]$all_results_em_beta_pxl[[1]]$best_result$iter
+    
     # Extract true matrices
     B_True <- simulation_data[[i]]$all_datasets[[1]]$B_true
     Covariance_matrix_true <- simulation_data[[i]]$all_datasets[[1]]$Covariance_matrix_true
@@ -52,6 +59,12 @@ load_data <- function(subdir_path) {
       Covariance_matrix_pxl = I(list(Covariance_matrix_pxl)),
       converged_pxl = converged_pxl,
       iter_pxl = iter_pxl,
+      
+      B_beta_pxl = I(list(B_beta_pxl)),
+      GAMMA_beta_pxl = I(list(GAMMA_beta_pxl)),
+      Covariance_matrix_beta_pxl = I(list(Covariance_matrix_beta_pxl)),
+      converged_beta_pxl = converged_beta_pxl,
+      iter_beta_pxl = iter_beta_pxl,
       
       B_True = I(list(B_True)),
       Covariance_matrix_true = I(list(Covariance_matrix_true)),
@@ -77,8 +90,12 @@ load_data <- function(subdir_path) {
     simulation_data[[i]]$all_results_em_pxl[[1]]$best_result$likelihood
   })
   
-  # Identify rows where likelihoods in any of em, em_beta, or em_pxl are zero
-  zero_indices <- which(likelihoods_em == 0 | likelihoods_em_beta == 0 | likelihoods_em_pxl == 0)
+  likelihoods_em_beta_pxl <- sapply(1:length(result_dataframe$B_beta_pxl), function(i) {
+    simulation_data[[i]]$all_results_em_beta_pxl[[1]]$best_result$likelihood
+  })
+  
+  # Identify rows where likelihoods in any of em, em_beta, em_pxl, or em_beta_pxl are zero
+  zero_indices <- which(likelihoods_em == 0 | likelihoods_em_beta == 0 | likelihoods_em_pxl == 0 | likelihoods_em_beta_pxl == 0)
   
   # Remove rows with zero likelihoods
   if (length(zero_indices) > 0) {
@@ -110,6 +127,13 @@ load_data <- function(subdir_path) {
       return(B_permuted_pxl)
     })
     
+    dataframe$B_permuted_beta_pxl <- lapply(1:nrow(dataframe), function(i) {
+      B_beta_pxl <- dataframe$B_beta_pxl[[i]]
+      GAMMA_beta_pxl <- dataframe$GAMMA_beta_pxl[[i]]
+      B_permuted_beta_pxl <- permute_B(B_true, GAMMA_beta_pxl, B_beta_pxl)
+      return(B_permuted_beta_pxl)
+    })
+    
     dataframe$GAMMA_permuted <- lapply(1:nrow(dataframe), function(i) {
       GAMMA_truncated <- dataframe$GAMMA[[i]]
       GAMMA_permuted <- permute_B(B_true, GAMMA_truncated, GAMMA_truncated)
@@ -126,6 +150,12 @@ load_data <- function(subdir_path) {
       GAMMA_pxl <- dataframe$GAMMA_pxl[[i]]
       GAMMA_permuted_pxl <- permute_B(B_true, GAMMA_pxl, GAMMA_pxl)
       return(GAMMA_permuted_pxl)
+    })
+    
+    dataframe$GAMMA_permuted_beta_pxl <- lapply(1:nrow(dataframe), function(i) {
+      GAMMA_beta_pxl <- dataframe$GAMMA_beta_pxl[[i]]
+      GAMMA_permuted_beta_pxl <- permute_B(B_true, GAMMA_beta_pxl, GAMMA_beta_pxl)
+      return(GAMMA_permuted_beta_pxl)
     })
     
     return(dataframe)
