@@ -1,15 +1,18 @@
 rm(list = ls())
 source("Scripts/Analysis/functions.R")
+library(xtable)
 library(dplyr)
 
-results_old <- readRDS("results_old.rds")
-results_new <- readRDS("results_new.rds")
+# results_old <- readRDS("results_old.rds")
+# results_new <- readRDS("results_new.rds")
+results_new <- readRDS("results_beta_pxl.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {
   # Define the matrix names you're interested in (hardcoded)
-  matrix_names <- c("B_permuted", "B_permuted_beta", "B_permuted_pxl", 
-                    "Covariance_matrix", "Covariance_matrix_beta", "Covariance_matrix_pxl")
+  # matrix_names <- c("B_permuted", "B_permuted_beta", "B_permuted_beta_pxl", "B_permuted_pxl",  
+  #                   "Covariance_matrix", "Covariance_matrix_beta", "Covariance_matrix_beta_pxl", "Covariance_matrix_pxl")
+  matrix_names <- c( "Covariance_matrix", "Covariance_matrix_beta", "Covariance_matrix_pxl", "Covariance_matrix_beta_pxl")
   
   # Initialize an empty list to store the results
   results <- list()
@@ -50,12 +53,18 @@ create_summary_table <- function(results_list) {
 }
 
 # Example usage:
-summary_table_old <- create_summary_table(results_old)
+# summary_table_old <- create_summary_table(results_old)
 summary_table_new <- create_summary_table(results_new)
 
 # Print the summary table
-round(summary_table_old,4)
-round(summary_table_new,4)
+# round(summary_table_old,4)
+round(summary_table_new, 6)
+
+# Convert the table to LaTeX code
+latex_code <- xtable(summary_table_new,digits = 4)
+
+# Print the LaTeX code
+print(latex_code)
 stop()
 # Function to compare GAMMA to B_True for a given results list
 create_comparison_table <- function(results_list) {
@@ -67,6 +76,7 @@ create_comparison_table <- function(results_list) {
                                   em = dataframe$GAMMA_permuted,
                                   em_beta = dataframe$GAMMA_permuted_beta,
                                   em_pxl = dataframe$GAMMA_permuted_pxl,
+                                  em_beta_pxl = dataframe$GAMMA_permuted_beta_pxl,
                                   stop("Invalid type specified. Choose 'em', 'em_beta', or 'em_pxl'."))
     
     B_true <- dataframe$B_True[[1]]  # Assuming B_True is consistent across simulations
@@ -93,7 +103,8 @@ create_comparison_table <- function(results_list) {
     comparison_results[[structure_name]] <- list(
       times_correct = compare_GAMMA_to_B_true(dataframe, "em"),
       times_correct_beta = compare_GAMMA_to_B_true(dataframe, "em_beta"),
-      times_correct_pxl = compare_GAMMA_to_B_true(dataframe, "em_pxl")
+      times_correct_pxl = compare_GAMMA_to_B_true(dataframe, "em_pxl"),
+      times_correct_beta_pxl = compare_GAMMA_to_B_true(dataframe, "em_beta_pxl")
     )
   }
   
@@ -103,19 +114,20 @@ create_comparison_table <- function(results_list) {
       Dataset = name,
       times_correct = comparison_results[[name]]$times_correct,
       times_correct_beta = comparison_results[[name]]$times_correct_beta,
-      times_correct_pxl = comparison_results[[name]]$times_correct_pxl
+      times_correct_pxl = comparison_results[[name]]$times_correct_pxl,
+      times_correct_beta_pxl = comparison_results[[name]]$times_correct_beta_pxl
     )
   }))
   
   # Remove row names and reorder columns
   rownames(comparison_df) <- NULL
   comparison_df <- comparison_df %>%
-    select(Dataset, times_correct, times_correct_beta, times_correct_pxl)  # Ensure column order
+    select(Dataset, times_correct, times_correct_beta, times_correct_pxl, times_correct_beta_pxl)  # Ensure column order
   
   # Return the comparison data frame
   return(comparison_df)
 }
 
 # Example usage:
-comparison_df <- create_comparison_table(all_analysis_results)
+comparison_df <- create_comparison_table(results_new)
 print(comparison_df)

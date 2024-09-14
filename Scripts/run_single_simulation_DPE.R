@@ -23,7 +23,7 @@ print_factors <- FALSE
 max_iter <- 15000
 tol <- 1e-2
 ll <- FALSE
-num_runs <- 4
+num_runs <- 10
 
 # List of datasets to generate and their descriptions 
 load("data_generators_new.RData")

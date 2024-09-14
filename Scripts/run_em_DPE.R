@@ -3,8 +3,8 @@ run_em_algorithm_DPE <- function(em_function, data, q, dim1 = NULL, dim2 = NULL,
                              ll = TRUE, num_runs = 4) {
   
   # Generate 5 equispaced log values between -1 and -10 (in decreasing order), then exponentiate
-  #log_v0 <- seq(-6, -10, length.out = 4)
-  #v0_values <- exp(log_v0)
+  log_v0 <- seq(-6, -10, length.out = 4)
+  v0_values <- exp(log_v0)
   
   results <- vector("list", num_runs + 1)  # To store the final result of each run (including PCA)
   log_liks <- numeric(num_runs + 1)  # To store the log-likelihood of the final result for each run (including PCA)
