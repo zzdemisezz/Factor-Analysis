@@ -4,7 +4,7 @@
 #SBATCH --partition=short
 #SBATCH --output=logs/sim_output_%A_%a.out  # Redirect standard output to logs directory
 #SBATCH --error=logs/sim_error_%A_%a.err    # Redirect standard error to logs directory
-#SBATCH --array=1-1080                      # Job array 
+#SBATCH --array=1-2160                      # Job array 
 #SBATCH --cpus-per-task=1                   # Number of CPU cores per job
 
 # Load the R module

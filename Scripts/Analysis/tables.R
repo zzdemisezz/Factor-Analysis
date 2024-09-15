@@ -5,7 +5,8 @@ library(dplyr)
 
 # results_old <- readRDS("results_old.rds")
 # results <- readRDS("results_new_2.rds")
-results_new <- readRDS("results_beta_pxl.rds")
+results_final <- readRDS("results_final.rds")
+# results_new <- readRDS("results_beta_pxl.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {
@@ -56,11 +57,11 @@ create_summary_table <- function(results_list) {
 
 # Example usage:
 # summary_table_old <- create_summary_table(results_old)
-summary_table_new <- create_summary_table(results_new)
+summary_table_final <- create_summary_table(results_final)
 
 # Print the summary table
 # round(summary_table_old,4)
-round(summary_table_new, 4)
+round(summary_table_final, 5)
 
 # Convert the table to LaTeX code
 # latex_code <- xtable(summary_table_new,digits = 4)
@@ -132,5 +133,5 @@ create_comparison_table <- function(results_list) {
 }
 
 # Example usage:
-comparison_df <- create_comparison_table(results_new)
+comparison_df <- create_comparison_table(results_final)
 print(comparison_df)

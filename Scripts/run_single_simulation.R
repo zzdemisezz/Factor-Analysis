@@ -18,10 +18,10 @@ set.seed(simulation_index)  # Ensure different seeds for different runs
 # Parameters
 n <- 500 
 q <- 3
-dim1 <- 20
-dim2 <- 20
+dim1 <- 10
+dim2 <- 10
 print_factors <- FALSE
-max_iter <- 15000
+max_iter <- 5000
 tol <- 1e-2
 ll <- FALSE
 num_runs <- 10

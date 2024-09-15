@@ -1,4 +1,4 @@
-# rm(list = ls())
+rm(list = ls())
 # library("viridisLite")
 # library("viridis")
 # library("RColorBrewer")
@@ -10,13 +10,13 @@ library("cowplot")
 
 source("Scripts/Analysis/Final_Functions.R")
 
-#results <- readRDS("results_beta_pxl.rds") # has iter and converged
-# structure <- results$`hard-moderate`
+results <- readRDS("results_beta_pxl.rds") # has iter and converged
+structure <- results$`hard-moderate`
 # results2 <- readRDS("results_old.rds")
-structure <- results2$`overlap2-large-strong`
+# structure <- results2$`overlap2-large-strong`
 
-matrices <- calculate_statistics(structure, type = "em")
-matrices_beta <- calculate_statistics(structure, type = "em_beta")
+matrices <- calculate_statistics(structure, type = "em_pxl")
+matrices_beta <- calculate_statistics(structure, type = "em_beta_pxl")
 
 # Function to compare GAMMA to B_True for a specific dataframe and return indices of mismatches
 # compare_GAMMA_to_B_true <- function(dataframe, type = "em") {
@@ -76,7 +76,7 @@ final_plot <- (p1 | p2 | p3) / (p4 | p5)
 # Display the final plot
 final_plot
 # stop()
-# ggsave("~/Downloads/covariances.png", width=16, height = 8)
+ggsave("~/Downloads/covariances-hard-moderate.png", width=16, height = 8)
 
 # Factors ####
 # Split loadings into submatrices
@@ -98,7 +98,7 @@ common_scale_mse <- range(c(mse_factors, mse_factors_beta))
 color_scale_true_est <- scale_fill_gradient2(low = "blue", mid = "white", high = "darkblue", midpoint = 0, limits = common_scale_left)
 # Left side (True, Estimated, Estimated Beta) - sharing the same color scale
 p_true <- lapply(1:3, function(i) create_custom_heatmap(true_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = paste("True", i)) + color_scale_true_est)
-true_plot <- (p_true[[1]] | p_true[[2]] | p_true[[3]]) 
+# true_plot <- (p_true[[1]] | p_true[[2]] | p_true[[3]]) 
 # true_plot
 # true_plot <- plot_grid(
 #   p_true[[1]], p_true[[2]], p_true[[3]],
@@ -141,96 +141,5 @@ final_plot <- (
 # Display the final plot
 final_plot
 
-# ggsave("~/Downloads/loadings.png", width = 10, height = 8, dpi = 300)
-
-stop()
-# OLD ####
-
-# Convert the matrix to a format suitable for ggplot2
-matrix_melted <- melt(matrix)
-  
-ggplot(matrix_melted, aes(x = Var2, y = Var1, fill = value)) +
-  geom_tile() +  # No internal tile borders
-  scale_y_reverse() +  # Reverse the y-axis (so the first row is at the top)
-  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0) +
-  theme_minimal() +
-  theme(
-    axis.text = element_blank(),       # Remove axis text
-    axis.title = element_blank(),      # Remove axis titles
-    axis.ticks = element_blank(),      # Remove axis ticks
-    panel.grid = element_blank(),      # Remove grid lines
-    panel.border = element_rect(color = "black", fill = NA, size = 1)  # Add border only around the matrix
-  ) +
-  coord_fixed()  # Ensure that the aspect ratio of the tiles remains square
-
-# Option 3 ####
-levelplot(t(factors[[1]]), xlab = NULL, ylab = NULL)
-library(lattice)
-
-# Assuming your matrix is called 'matrix_data'
-levelplot(t(factors[[1]]),
-          xlab = NULL, ylab = NULL,
-          col.regions = colorRampPalette(c("white", "purple"))(100),  # Color palette
-          at = seq(0, 1, length.out = 101),  # Adjust 'at' for color intervals if necessary
-          scales = list(draw = FALSE),  # Remove axis labels and ticks
-          colorkey = FALSE,  # Remove the color legend
-          aspect = "iso",  # Fix aspect ratio to make the plot square
-          panel = function(...) {
-            panel.levelplot(...)  # Call the panel function for levelplot
-            panel.rect(xleft = 0.5, ybottom = 0.5, 
-                       xright = ncol(t(factors[[1]])) + 0.5, 
-                       ytop = nrow(t(factors[[1]])) + 0.5, 
-                       border = "black", lwd = 2)  # Add black border around the entire matrix
-          })
-levelplot(t(factors[[2]]),
-          xlab = NULL, ylab = NULL,
-          col.regions = colorRampPalette(c("white", "purple"))(100),  # Color palette
-          at = seq(0, 1, length.out = 101),  # Adjust 'at' for color intervals if necessary
-          scales = list(draw = FALSE),  # Remove axis labels and ticks
-          colorkey = FALSE,  # Remove the color legend
-          aspect = "iso",  # Fix aspect ratio to make the plot square
-          panel = function(...) {
-            panel.levelplot(...)  # Call the panel function for levelplot
-            panel.rect(xleft = 0.5, ybottom = 0.5, 
-                       xright = ncol(t(factors[[1]])) + 0.5, 
-                       ytop = nrow(t(factors[[1]])) + 0.5, 
-                       border = "black", lwd = 2)  # Add black border around the entire matrix
-          })
-levelplot(t(factors[[3]]),
-          xlab = NULL, ylab = NULL,
-          col.regions = colorRampPalette(c("white", "purple"))(100),  # Color palette
-          at = seq(0, 1, length.out = 101),  # Adjust 'at' for color intervals if necessary
-          scales = list(draw = FALSE),  # Remove axis labels and ticks
-          colorkey = FALSE,  # Remove the color legend
-          aspect = "iso",  # Fix aspect ratio to make the plot square
-          panel = function(...) {
-            panel.levelplot(...)  # Call the panel function for levelplot
-            panel.rect(xleft = 0.5, ybottom = 0.5, 
-                       xright = ncol(t(factors[[1]])) + 0.5, 
-                       ytop = nrow(t(factors[[1]])) + 0.5, 
-                       border = "black", lwd = 2)  # Add black border around the entire matrix
-          })
-
-
-
-# Option 4 ####
-# Key is legend, border is black borders, asp is square, 
-plot(matrices$Covariance_true, border=NA, col = custom_palette, key=NULL, axis.col=NULL, 
-     axis.row=NULL, xlab='', ylab='', main = "True Covariance Matrix")
-plot(matrices$average_covariance, border=NA, col = custom_palette, key=NULL, axis.col=NULL, 
-     axis.row=NULL, xlab='', ylab='', main = "Average Estimated Covariance Matrix")
-plot(matrices$MSE_covariance, border=NA, col = custom_palette, key=NULL, axis.col=NULL, 
-     axis.row=NULL, xlab='', ylab='', main = "Average MSE Covariance Matrix")
-levelplot(t(matrices$B_true))
-
-
-plot(factors[[1]], border=NA, asp = TRUE, key=NULL, axis.col=NULL, 
-     axis.row=NULL, xlab='', ylab='', col = topo.colors, main = "True Factor 1")
-plot(factors[[2]], border=NA, asp = TRUE, key=NULL, axis.col=NULL, 
-     axis.row=NULL, xlab='', ylab='', col = topo.colors, main = "True Factor 2")
-plot(factors[[3]], border=NA, asp = TRUE, key=NULL, axis.col=NULL, 
-     axis.row=NULL, xlab='', ylab='', col = topo.colors, main = "True Factor 3")
-
-
-
+ggsave("~/Downloads/loadings-hard-moderate.png", width = 10, height = 8, dpi = 300)
 
