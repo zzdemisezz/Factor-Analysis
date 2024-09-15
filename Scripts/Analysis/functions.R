@@ -264,8 +264,7 @@ calculate_elementwise_variance_matrix <- function(matrix_list) {
   
   # Loop through each matrix to calculate the sum of squared differences
   for (i in 1:num_matrices) {
-    matrix <- matrix_list[[i]]
-    variance_matrix <- variance_matrix + (matrix - mean_matrix)^2
+    variance_matrix <- variance_matrix + (matrix_list[[i]] - mean_matrix)^2
   }
   
   # The variance matrix is the sum of squared differences divided by (number of matrices - 1)
@@ -309,8 +308,11 @@ calculate_statistics <- function(dataframe, type = "em") {
   } else if (type == "em_pxl") {
     permuted_matrices <- dataframe$B_permuted_pxl
     covariance_matrices <- dataframe$Covariance_matrix_pxl
+  } else if (type == "em_beta_pxl") {
+    permuted_matrices <- dataframe$B_permuted_beta_pxl
+    covariance_matrices <- dataframe$Covariance_matrix_beta_pxl
   } else {
-    stop("Invalid type specified. Choose 'em', 'em_beta', or 'em_pxl'.")
+    stop("Invalid type specified. Choose 'em', 'em_beta', or 'em_pxl' or 'em_beta_pxl'.")
   }
   
   # For B matrices

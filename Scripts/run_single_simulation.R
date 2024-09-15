@@ -27,7 +27,8 @@ ll <- FALSE
 num_runs <- 10
 
 # List of datasets to generate and their descriptions 
-load("data_generators_new.RData")
+#load("data_generators_new.RData")
+load("data_generators_old.RData")
 
 # Find the right generator
 generator <- NULL
@@ -45,7 +46,7 @@ if (is.null(generator)) {
 results <- run_simulations(generator, 1)
 
 # Create subfolder if it doesn't exist
-output_dir <- file.path("/well/nichols/users/rht383/results_complex_2", data_generator_name)
+output_dir <- file.path("/well/nichols/users/rht383/results_final", data_generator_name)
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
