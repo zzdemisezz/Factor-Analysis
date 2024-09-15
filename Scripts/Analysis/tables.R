@@ -1,18 +1,20 @@
 rm(list = ls())
-source("Scripts/Analysis/functions.R")
+source("Scripts/Analysis/Final_Functions.R")
 library(xtable)
 library(dplyr)
 
 # results_old <- readRDS("results_old.rds")
-# results_new <- readRDS("results_new.rds")
+# results <- readRDS("results_new_2.rds")
 results_new <- readRDS("results_beta_pxl.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {
   # Define the matrix names you're interested in (hardcoded)
-  # matrix_names <- c("B_permuted", "B_permuted_beta", "B_permuted_beta_pxl", "B_permuted_pxl",  
+  # matrix_names <- c("B_permuted", "B_permuted_beta", "B_permuted_beta_pxl", "B_permuted_pxl",
   #                   "Covariance_matrix", "Covariance_matrix_beta", "Covariance_matrix_beta_pxl", "Covariance_matrix_pxl")
   matrix_names <- c( "Covariance_matrix", "Covariance_matrix_beta", "Covariance_matrix_pxl", "Covariance_matrix_beta_pxl")
+  # matrix_names <- c( "Covariance_matrix", "Covariance_matrix_beta", "Covariance_matrix_pxl")
+  
   
   # Initialize an empty list to store the results
   results <- list()
@@ -58,13 +60,13 @@ summary_table_new <- create_summary_table(results_new)
 
 # Print the summary table
 # round(summary_table_old,4)
-round(summary_table_new, 6)
+round(summary_table_new, 4)
 
 # Convert the table to LaTeX code
-latex_code <- xtable(summary_table_new,digits = 4)
+# latex_code <- xtable(summary_table_new,digits = 4)
 
 # Print the LaTeX code
-print(latex_code)
+# print(latex_code)
 stop()
 # Function to compare GAMMA to B_True for a given results list
 create_comparison_table <- function(results_list) {
@@ -122,7 +124,8 @@ create_comparison_table <- function(results_list) {
   # Remove row names and reorder columns
   rownames(comparison_df) <- NULL
   comparison_df <- comparison_df %>%
-    select(Dataset, times_correct, times_correct_beta, times_correct_pxl, times_correct_beta_pxl)  # Ensure column order
+    select(Dataset, times_correct, times_correct_beta, times_correct_pxl, times_correct_beta_pxl)
+    # select(Dataset, times_correct, times_correct_beta, times_correct_pxl) # Ensure column order
   
   # Return the comparison data frame
   return(comparison_df)

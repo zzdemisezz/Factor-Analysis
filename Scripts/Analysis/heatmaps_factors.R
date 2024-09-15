@@ -15,12 +15,16 @@ statistics_beta <- calculate_statistics(heatmap_dataframe, type = "em_beta")
 # Create heatmaps for B_permuted (from statistics_em)
 create_factor_heatmap(statistics_em$B_true, title = "True factors")
 create_factor_heatmap_test(statistics_em$B_true)
-create_factor_heatmap(statistics_em$average_matrix, title = "Heatmap of average factors")
-create_factor_heatmap(statistics_em$bias_matrix, title = "Heatmap of bias factors")
-create_factor_heatmap(statistics_em$MSE_matrix, title = "Heatmap of MSE factors")
+create_factor_heatmap(matrices$average_matrix, title = "Heatmap of average factors")
+
+create_factor_heatmap(matrices$bias_matrix, title = "Heatmap of bias factors")
+create_factor_heatmap(matrices$MSE_matrix, title = "Heatmap of MSE factors")
+
 stop()
 
 # Create heatmaps for B_permuted_beta (from statistics_beta)
 create_factor_heatmap(statistics_beta$average_matrix, title = "Heatmap of average factors - beta")
 create_factor_heatmap(statistics_beta$bias_matrix, title = "Heatmap of bias factors - beta")
 create_factor_heatmap(statistics_beta$MSE_matrix, title = "Heatmap of MSE factors - beta")
+
+

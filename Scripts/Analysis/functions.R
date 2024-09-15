@@ -185,11 +185,6 @@ create_factor_heatmap_test <- function(loadings_matrix) {
   print(final_plot)
 }
 
-
-
-
-
-
 # Function to create a heatmap with the correct orientation
 create_heatmap <- function(matrix_data, title = "Heatmap", x_label = "Factors", y_label = "Loadings") {
   

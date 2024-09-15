@@ -1,6 +1,11 @@
+library(ggplot2)
+library(reshape2)
+library(cowplot)
+
 # Function to calculate element-wise average matrix for a given matrix type
 calculate_elementwise_average_matrix <- function(matrix_list) {
-  Reduce(`+`, matrix_list) / length(matrix_list)
+  abs_matrix_list <- lapply(matrix_list, abs)
+  Reduce(`+`, abs_matrix_list) / length(matrix_list)
 }
 # Function to calculate element-wise bias matrix for a given matrix type
 calculate_elementwise_bias_matrix <- function(matrix_list, true_matrix) {
@@ -45,7 +50,7 @@ calculate_elementwise_MSE_matrix <- function(matrix_list, true_matrix) {
   
   # Loop through each matrix to compute the sum of squared differences
   for (i in 1:num_matrices) {
-    MSE_matrix <- MSE_matrix + (matrix_list[[i]] - true_matrix)^2
+    MSE_matrix <- MSE_matrix + (abs(matrix_list[[i]]) - true_matrix)^2
   }
   
   # The MSE matrix is the average of the squared differences
@@ -125,4 +130,66 @@ split_loadings_to_matrices <- function(loadings_matrix) {
   }
   
   return(matrices_list)
+}
+
+# Create a custom heatmap for one of the matrices
+create_custom_heatmap <- function(matrix_data, show_legend = TRUE, common_scale = NULL, show_grid = TRUE, title = NULL) {
+  ggplot(melt(matrix_data), aes(x = Var2, y = Var1, fill = value)) +
+    geom_tile(color = if (show_grid) "gray" else NA) +  # Optionally show grid lines
+    scale_y_reverse() +  
+    scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, 
+                         limits = common_scale) +  # Use the common scale for the fill
+    theme_minimal() +
+    theme(
+      legend.position = if (show_legend) "right" else "none",  # Toggle legend
+      legend.justification = "center",
+      aspect.ratio = 1,  # Ensure square tiles
+      axis.title = element_blank(),  # Remove axis titles
+      axis.text = element_blank(),   # Remove axis text
+      axis.ticks = element_blank(),  # Remove axis ticks
+      panel.grid = element_blank(),  # Remove panel grid lines
+      plot.margin = margin(0, 0, 0, 0),  # Remove plot margin
+      plot.title = element_text(hjust = 0.5, margin = margin(b = 1))  # Center the title
+    ) +
+    coord_fixed() +  # Fix aspect ratio to make tiles square
+    annotate("rect", xmin = 0.5, xmax = ncol(matrix_data) + 0.5, 
+             ymin = 0.5, ymax = nrow(matrix_data) + 0.5, 
+             color = "black", fill = NA, size = 1) +  # Add border around the matrix
+    ggtitle(title)  # Add optional title
+}
+
+create_factor_heatmap <- function(loadings_matrix, title = "True factors") {
+  # Function to extract the legend from a ggplot object
+  get_legend <- function(ggplot_obj) {
+    legend <- cowplot::get_legend(ggplot_obj + theme(legend.position = "right"))
+    return(legend)
+  }
+  
+  # Split the loadings matrix into submatrices
+  split_matrices <- split_loadings_to_matrices(loadings_matrix)
+  
+  # Calculate the common scale (min and max values across all matrices)
+  common_scale <- range(unlist(split_matrices))
+  
+  # Create heatmaps for each matrix using the common scale
+  real_factor1 <- create_custom_heatmap(split_matrices[[1]], show_legend = FALSE, common_scale = common_scale)
+  real_factor2 <- create_custom_heatmap(split_matrices[[2]], show_legend = FALSE, common_scale = common_scale)
+  real_factor3 <- create_custom_heatmap(split_matrices[[3]], show_legend = TRUE, common_scale = common_scale)
+  
+  # Extract the legend from the third plot
+  legend <- get_legend(real_factor3)
+  
+  # Remove the legend from the third plot
+  real_factor3 <- real_factor3 + theme(legend.position = "none")
+  
+  # Combine the heatmaps side by side with the extracted legend
+  final_plot <- plot_grid(
+    plot_grid(real_factor1, real_factor2, real_factor3, ncol = 3, align = "h", axis = "tb"),
+    legend,
+    ncol = 2,
+    rel_widths = c(3, 0.3)
+  )
+  
+  # Print the final plot
+  print(final_plot)
 }
