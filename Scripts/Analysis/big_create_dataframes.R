@@ -2,7 +2,7 @@
 source("Scripts/Analysis/loading-objects.R")
 
 # Specifying the directory results
-main_dir <- "/well/nichols/users/rht383/results_final2"
+main_dir <- "/well/nichols/users/rht383/results_final"
 
 # Specify the directory where the result chunks will be saved
 chunks_dir <- "/well/nichols/users/rht383/chunks3"
