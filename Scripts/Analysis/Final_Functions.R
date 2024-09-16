@@ -193,3 +193,5 @@ create_factor_heatmap <- function(loadings_matrix, title = "True factors") {
   # Print the final plot
   print(final_plot)
 }
+
+

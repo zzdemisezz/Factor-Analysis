@@ -26,6 +26,7 @@ em <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, tol = 1e-3,
   PSI <- diag(p)
   THETA <- matrix(0.5, p, q)
   SIGMA_inverse <- matrix(rnorm(q * q), q, q)
+  SIGMA_inverse <- SIGMA_inverse %*% t(SIGMA_inverse)
   
   # MCAR functions
   if (is.null(dim3)) {

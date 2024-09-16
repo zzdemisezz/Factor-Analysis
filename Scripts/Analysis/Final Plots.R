@@ -12,7 +12,7 @@ source("Scripts/Analysis/Final_Functions.R")
 
 results <- readRDS("results_beta_pxl.rds") # has iter and converged
 structure <- results$`hard-moderate`
-# results2 <- readRDS("results_old.rds")
+# results2 <- readRDS("results_final.rds")
 # structure <- results2$`overlap2-large-strong`
 
 matrices <- calculate_statistics(structure, type = "em_pxl")
@@ -27,17 +27,17 @@ matrices_beta <- calculate_statistics(structure, type = "em_beta_pxl")
 #                                 em_pxl = dataframe$GAMMA_permuted_pxl,
 #                                 em_beta_pxl = dataframe$GAMMA_permuted_beta_pxl,
 #                                 stop("Invalid type specified. Choose 'em', 'em_beta', or 'em_pxl'."))
-#   
+# 
 #   B_true <- dataframe$B_True[[1]]  # Assuming B_True is consistent across simulations
-#   
+# 
 #   # Compare each GAMMA_permuted matrix with B_True and get mismatch indices
 #   match_results <- sapply(GAMMA_permuted_list, function(GAMMA_permuted) {
 #     isTRUE(all.equal(GAMMA_permuted, B_true))
 #   })
-#   
+# 
 #   # Get the indices where there are no exact matches (FALSE values in match_results)
 #   mismatch_indices <- which(!match_results)
-#   
+# 
 #   return(mismatch_indices)
 # }
 # test <- compare_GAMMA_to_B_true(structure, type = "em")
@@ -62,21 +62,21 @@ color_scale_top <- scale_fill_gradient2(low = "white", high = "black", mid = "bl
 color_scale_bottom <- scale_fill_gradient2(low = "white", high = "red", mid = "pink", midpoint = mean(common_scale_bottom))
 
 # Top row (True, Estimated, Beta Estimated) - use the top scale, no legend
-p1 <- create_custom_heatmap(matrices$Covariance_true, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_top, title = expression("True" ~ Psi)) + color_scale_top
-p2 <- create_custom_heatmap(matrices$average_covariance, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_top, title = expression("Average Estimated" ~ Psi)) + color_scale_top
-p3 <- create_custom_heatmap(matrices_beta$average_covariance, show_legend = TRUE, show_grid = FALSE, common_scale = common_scale_top, title = expression("Beta Average Estimated" ~ Psi)) + color_scale_top
+p1 <- create_custom_heatmap(matrices$Covariance_true, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_top, title = expression("True" ~ bold(BB^T + Psi))) + color_scale_top
+p2 <- create_custom_heatmap(matrices$average_covariance, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_top, title = expression("Spatial Average Estimated" ~ bold(BB^T + Psi))) + color_scale_top
+p3 <- create_custom_heatmap(matrices_beta$average_covariance, show_legend = TRUE, show_grid = FALSE, common_scale = common_scale_top, title = expression("Beta Average Estimated" ~ bold(BB^T + Psi))) + color_scale_top
 
 # Bottom row (MSE, Beta MSE) - use the bottom scale, one legend on the right
-p4 <- create_custom_heatmap(matrices$MSE_covariance, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_bottom, title = expression("MSE" ~ Psi)) + color_scale_bottom
-p5 <- create_custom_heatmap(matrices_beta$MSE_covariance, show_legend = TRUE, show_grid = FALSE, common_scale = common_scale_bottom, title = expression("Beta MSE" ~ Psi)) + color_scale_bottom
+p4 <- create_custom_heatmap(matrices$MSE_covariance, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_bottom, title = expression("Spatial MSEs" ~ bold(BB^T + Psi))) + color_scale_bottom
+p5 <- create_custom_heatmap(matrices_beta$MSE_covariance, show_legend = TRUE, show_grid = FALSE, common_scale = common_scale_bottom, title = expression("Beta MSEs" ~ bold(BB^T + Psi))) + color_scale_bottom
 
 # Combine the heatmaps using patchwork
 final_plot <- (p1 | p2 | p3) / (p4 | p5)
 
 # Display the final plot
 final_plot
-# stop()
-ggsave("~/Downloads/covariances-hard-moderate.png", width=16, height = 8)
+# # stop()
+ggsave("~/Downloads/covariances-overlap2-large-strong.png", width=16, height = 8)
 
 # Factors ####
 # Split loadings into submatrices
@@ -97,16 +97,7 @@ common_scale_mse <- range(c(mse_factors, mse_factors_beta))
 # Color scale for True and Estimated - 0 is white
 color_scale_true_est <- scale_fill_gradient2(low = "blue", mid = "white", high = "darkblue", midpoint = 0, limits = common_scale_left)
 # Left side (True, Estimated, Estimated Beta) - sharing the same color scale
-p_true <- lapply(1:3, function(i) create_custom_heatmap(true_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = paste("True", i)) + color_scale_true_est)
-# true_plot <- (p_true[[1]] | p_true[[2]] | p_true[[3]]) 
-# true_plot
-# true_plot <- plot_grid(
-#   p_true[[1]], p_true[[2]], p_true[[3]],
-#   ncol = 3, align = "h", axis = "tb"
-# )
-# true_plot
-
-# ggsave("~/Downloads/true_loadings.png")
+p_true <- lapply(1:3, function(i) create_custom_heatmap(true_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = paste("True Factor", i)) + color_scale_true_est)
 
 # Color scale for Bias - 0 is white
 color_scale_bias <- scale_fill_gradient2(low = "red", mid = "white", high = "red", midpoint = 0, limits = common_scale_bias)
@@ -114,15 +105,78 @@ color_scale_bias <- scale_fill_gradient2(low = "red", mid = "white", high = "red
 # Color scale for MSE - 0 is white
 color_scale_mse <- scale_fill_gradient2(low = "lightgreen", mid = "white", high = "darkgreen", midpoint = 0, limits = common_scale_mse)
 
-p_est <- lapply(1:3, function(i) create_custom_heatmap(est_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = paste("Estimated", i)) + color_scale_true_est)
-p_est_beta <- lapply(1:3, function(i) create_custom_heatmap(est_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_left, title = paste("Estimated Beta", i)) + color_scale_true_est)
+# p_est <- lapply(1:3, function(i) create_custom_heatmap(est_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = paste("Spatial Estimate Factor", i)) + color_scale_true_est)
+# p_est_beta <- lapply(1:3, function(i) create_custom_heatmap(est_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_left, title = paste("Beta Estimate Factor", i)) + color_scale_true_est)
+# 
+# # Right side (Bias, Bias Beta, MSE, MSE Beta) with legends
+# p_bias <- lapply(1:3, function(i) create_custom_heatmap(bias_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_bias, title = paste("Spatial Biases Factor", i)) + color_scale_bias)
+# p_bias_beta <- lapply(1:3, function(i) create_custom_heatmap(bias_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_bias, title = paste("Beta Biases Factor", i)) + color_scale_bias)
+# 
+# p_mse <- lapply(1:3, function(i) create_custom_heatmap(mse_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_mse, title = paste("Spatial MSEs Factor", i)) + color_scale_mse)
+# p_mse_beta <- lapply(1:3, function(i) create_custom_heatmap(mse_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_mse, title = paste("Beta MSEs Factor", i)) + color_scale_mse)
 
-# Right side (Bias, Bias Beta, MSE, MSE Beta) with legends
-p_bias <- lapply(1:3, function(i) create_custom_heatmap(bias_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_bias, title = paste("Bias", i)) + color_scale_bias)
-p_bias_beta <- lapply(1:3, function(i) create_custom_heatmap(bias_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_bias, title = paste("Bias Beta", i)) + color_scale_bias)
+# True Factors
+p_true <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(true_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = "True Loading Factors") + color_scale_true_est
+  } else {
+    create_custom_heatmap(true_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left) + color_scale_true_est
+  }
+})
 
-p_mse <- lapply(1:3, function(i) create_custom_heatmap(mse_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_mse, title = paste("MSE", i)) + color_scale_mse)
-p_mse_beta <- lapply(1:3, function(i) create_custom_heatmap(mse_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_mse, title = paste("MSE Beta", i)) + color_scale_mse)
+# Spatial Estimated Factors
+p_est <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(est_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left, title = " Spatial Average Estimates") + color_scale_true_est
+  } else {
+    create_custom_heatmap(est_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left) + color_scale_true_est
+  }
+})
+
+# Beta Estimated Factors
+p_est_beta <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(est_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_left, title = " Beta Average Estimates") + color_scale_true_est
+  } else {
+    create_custom_heatmap(est_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_left) + color_scale_true_est
+  }
+})
+
+# Spatial Biases Factors
+p_bias <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(bias_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_bias, title = " Spatial Average Biases") + color_scale_bias
+  } else {
+    create_custom_heatmap(bias_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_bias) + color_scale_bias
+  }
+})
+
+# Beta Biases Factors
+p_bias_beta <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(bias_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_bias, title = "Beta Average Biases") + color_scale_bias
+  } else {
+    create_custom_heatmap(bias_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_bias) + color_scale_bias
+  }
+})
+
+# Spatial MSEs Factors
+p_mse <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(mse_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_mse, title = "Spatial MSEs") + color_scale_mse
+  } else {
+    create_custom_heatmap(mse_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_mse) + color_scale_mse
+  }
+})
+
+# Beta MSEs Factors
+p_mse_beta <- lapply(1:3, function(i) {
+  if (i == 2) {
+    create_custom_heatmap(mse_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_mse, title = "Beta MSEs") + color_scale_mse
+  } else {
+    create_custom_heatmap(mse_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_mse) + color_scale_mse
+  }
+})
 
 # Arrange the plots according to your updated sketch
 final_plot <- (
@@ -141,5 +195,5 @@ final_plot <- (
 # Display the final plot
 final_plot
 
-ggsave("~/Downloads/loadings-hard-moderate.png", width = 10, height = 8, dpi = 300)
+ggsave("~/Downloads/loadings-hard-moderate.png", width = 8.27, height = 4.68, units = "in", dpi = 300)
 

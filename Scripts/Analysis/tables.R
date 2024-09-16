@@ -61,13 +61,13 @@ summary_table_final <- create_summary_table(results_final)
 
 # Print the summary table
 # round(summary_table_old,4)
-round(summary_table_final, 5)
+round(summary_table_final, 4)
 
 # Convert the table to LaTeX code
-# latex_code <- xtable(summary_table_new,digits = 4)
+latex_code <- xtable(summary_table_final,digits = 4)
 
 # Print the LaTeX code
-# print(latex_code)
+print(latex_code)
 stop()
 # Function to compare GAMMA to B_True for a given results list
 create_comparison_table <- function(results_list) {
