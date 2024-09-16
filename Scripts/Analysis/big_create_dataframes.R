@@ -2,7 +2,7 @@
 source("Scripts/Analysis/loading-objects.R")
 
 # Specifying the directory results
-main_dir <- "/well/nichols/users/rht383/results_final"
+main_dir <- "/well/nichols/users/rht383/results_final2"
 
 # Specify the directory where the result chunks will be saved
 chunks_dir <- "/well/nichols/users/rht383/chunks3"
@@ -54,6 +54,6 @@ for (rds_file in rds_files) {
 }
 
 # Save the combined result as a single .rds file
-saveRDS(all_analysis_results, file = "/well/nichols/users/rht383/dataframes/results_final.rds")
+saveRDS(all_analysis_results, file = "/well/nichols/users/rht383/dataframes/results_final2.rds")
 # test <- readRDS("new_results_2.rds")
 # cat("All individual results have been combined and saved as 'final_combined_results.rds'.\n")
