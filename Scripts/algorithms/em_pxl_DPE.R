@@ -3,7 +3,7 @@ source("Scripts/likelihood.R")
 source("Scripts/MCAR_Functions.R")
 
 em_pxl_DPE <- function(Y, q, dim1 = 10, dim2 = 10, dim3 = NULL, v0 = exp(-1), B = NULL, 
-                   tol = 1e-3, max_iter = 5000, ll = TRUE, PCA = FALSE){
+                  tol = 1e-3, max_iter = 5000, ll = TRUE, PCA = FALSE){
   
   n <- nrow(Y)
   p <- ncol(Y)

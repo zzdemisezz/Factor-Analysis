@@ -1,4 +1,4 @@
-# Only change directory for results in this file and data generators/dimensions
+# Only change directory for results in this file and data generators/dimensions/iterations
 # Load necessary scripts and libraries
 source("Scripts/data_generation.R")
 lapply(list.files("Scripts/algorithms", pattern = "\\.R$", full.names = TRUE), source)
@@ -18,7 +18,7 @@ q <- 3
 dim1 <- 20
 dim2 <- 20
 print_factors <- FALSE
-max_iter <- 5000
+max_iter <- 15000
 tol <- 1e-2
 ll <- FALSE
 num_runs <- 10

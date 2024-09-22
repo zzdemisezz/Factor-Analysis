@@ -1,7 +1,7 @@
 # EM algorithm for a beta prior on theta
 source("Scripts/likelihood.R")
 
-em_beta_DPE <- function(Y, q, tol = 1e-3, max_iter = 50, simplified = TRUE, v0 = exp(-1), 
+em_beta_DPE <- function(Y, q, tol = 1e-3, max_iter = 50, v0 = exp(-1), 
                     B = NULL, ll = TRUE, PCA = FALSE){
   n <- nrow(Y)
   p <- ncol(Y)
