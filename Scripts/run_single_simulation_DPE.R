@@ -15,17 +15,17 @@ set.seed(simulation_index)  # Ensure different seeds for different runs
 # Parameters
 n <- 500 
 q <- 3
-dim1 <- 20
-dim2 <- 20
+dim1 <- 10
+dim2 <- 10
 print_factors <- FALSE
-max_iter <- 15000
+max_iter <- 5000
 tol <- 1e-2
 ll <- FALSE
 num_runs <- 10
 
 # List of datasets to generate and their descriptions 
-load("data_generators_new.RData")
-#load("data_generators_old.RData")
+#load("data_generators_new.RData")
+load("data_generators_old.RData")
 
 # Find the right generator
 generator <- NULL
@@ -44,7 +44,7 @@ if (is.null(generator)) {
 results <- run_simulations_DPE(generator, 1)
 
 # Create subfolder if it doesn't exist
-output_dir <- file.path("/well/nichols/users/rht383/results_7", data_generator_name)
+output_dir <- file.path("/well/nichols/users/rht383/results_10x10_DPE", data_generator_name)
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }
