@@ -1,4 +1,4 @@
-# Only change directory for results in this file
+# Only change directory for results in this file and data generators
 # Load necessary scripts and libraries
 source("Scripts/data_generation.R")
 lapply(list.files("Scripts/algorithms", pattern = "\\.R$", full.names = TRUE), source)
@@ -24,8 +24,8 @@ ll <- FALSE
 num_runs <- 10
 
 # List of datasets to generate and their descriptions 
-#load("data_generators_new.RData")
-load("data_generators_old.RData")
+load("data_generators_new.RData")
+#load("data_generators_old.RData")
 
 # Find the right generator
 generator <- NULL
