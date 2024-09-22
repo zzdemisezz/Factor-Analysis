@@ -1,4 +1,3 @@
-# source("Scripts/Analysis/functions.R")
 source("Scripts/Analysis/loading-objects.R")
 
 # Specifying the directory results
