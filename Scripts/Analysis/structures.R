@@ -1,16 +1,12 @@
 rm(list = ls())
-library("ggplot2")
-library("reshape2")
 library("patchwork")
-library("cowplot")
-
 source("Scripts/Analysis/Final_Functions.R")
 
 # Load results
 # results2 <- readRDS("results_final.rds")
 results2 <- readRDS("results_beta_pxl.rds")
 
-# Function to keep only the first occurrence of each structure
+# Function to get only the names of the data structure with 1 correlation structure
 select_unique_structures <- function(names_list) {
   # unique_prefixes <- c("3x3", "5x5", "overlap2-small","overlap2-large", "overlap3-small", "overlap3-large")
   unique_prefixes <- c("simple", "medium", "hard")
@@ -20,13 +16,12 @@ select_unique_structures <- function(names_list) {
   return(selected_names)
 }
 
-# Get the unique structure names
+# Get the data structure names
 unique_structures <- select_unique_structures(names(results2))
 
-# Function to generate a plot for a given structure with y-axis labels and no legends
+# Function to generate a plots for a given data structure 
 create_plots_for_structure_with_label <- function(structure, label) {
   matrices <- calculate_statistics(structure, type = "em")
-  matrices_beta <- calculate_statistics(structure, type = "em_beta")
   
   # Split loadings into submatrices
   true_factors <- split_loadings_to_matrices(matrices$B_true)
@@ -74,7 +69,7 @@ create_plots_for_structure_with_label <- function(structure, label) {
   return(true_plot)
 }
 
-# Create plots for only the unique structures
+# Create plots for all the data structures
 all_plots <- lapply(seq_along(unique_structures), function(i) {
   struct_name <- unique_structures[i]
   structure <- results2[[struct_name]]

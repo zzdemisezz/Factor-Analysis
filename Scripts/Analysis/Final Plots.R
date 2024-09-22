@@ -3,11 +3,7 @@ rm(list = ls())
 # library("viridis")
 # library("RColorBrewer")
 # library("pheatmap")
-library("ggplot2")
-library("reshape2")
 library("patchwork")
-library("cowplot")
-
 source("Scripts/Analysis/Final_Functions.R")
 
 results <- readRDS("results_beta_pxl.rds") # has iter and converged
@@ -19,31 +15,26 @@ matrices <- calculate_statistics(structure, type = "em_pxl")
 matrices_beta <- calculate_statistics(structure, type = "em_beta_pxl")
 
 # Covariances ####
-# Common scale for the top 3 heatmaps (covariance matrices)
+# Common scale for covariance matrices
 common_scale_top <- range(c(matrices$Covariance_true, matrices$average_covariance, matrices_beta$average_covariance))
-
-# Common scale for the bottom 2 heatmaps (MSE matrices)
+# Common scale for MSE matrices
 common_scale_bottom <- range(c(matrices$MSE_covariance, matrices_beta$MSE_covariance))
 
-# Define color scales for each group
-# Top row color scale (e.g., blue to red)
+# Top row color scale 
 color_scale_top <- scale_fill_gradient2(low = "white", high = "black", mid = "blue", midpoint = mean(common_scale_top))
-
-# Bottom row color scale (e.g., white to red for MSE)
+# Bottom row color scale 
 color_scale_bottom <- scale_fill_gradient2(low = "white", high = "red", mid = "pink", midpoint = mean(common_scale_bottom))
 
 # Top row (True, Estimated, Beta Estimated) - use the top scale, no legend
 p1 <- create_custom_heatmap(matrices$Covariance_true, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_top, title = expression("True" ~ bold(BB^T + Psi))) + color_scale_top
 p2 <- create_custom_heatmap(matrices$average_covariance, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_top, title = expression("Spatial Average Estimated" ~ bold(BB^T + Psi))) + color_scale_top
 p3 <- create_custom_heatmap(matrices_beta$average_covariance, show_legend = TRUE, show_grid = FALSE, common_scale = common_scale_top, title = expression("Beta Average Estimated" ~ bold(BB^T + Psi))) + color_scale_top
-
 # Bottom row (MSE, Beta MSE) - use the bottom scale, one legend on the right
 p4 <- create_custom_heatmap(matrices$MSE_covariance, show_legend = FALSE, show_grid = FALSE, common_scale = common_scale_bottom, title = expression("Spatial MSEs" ~ bold(BB^T + Psi))) + color_scale_bottom
 p5 <- create_custom_heatmap(matrices_beta$MSE_covariance, show_legend = TRUE, show_grid = FALSE, common_scale = common_scale_bottom, title = expression("Beta MSEs" ~ bold(BB^T + Psi))) + color_scale_bottom
 
 # Combine the heatmaps using patchwork
 final_plot <- (p1 | p2 | p3) / (p4 | p5)
-
 # Display the final plot
 final_plot
 stop()
@@ -64,7 +55,6 @@ common_scale_left <- range(c(true_factors, est_factors, est_factors_beta))
 common_scale_bias <- range(c(bias_factors, bias_factors_beta))
 common_scale_mse <- range(c(mse_factors, mse_factors_beta))
 
-# Define color schemes ensuring that 0 is white for each scale
 # Color scale for True and Estimated - 0 is white
 color_scale_true_est <- scale_fill_gradient2(low = "blue", mid = "white", high = "darkblue", midpoint = 0, limits = common_scale_left)
 # Left side (True, Estimated, Estimated Beta) - sharing the same color scale
@@ -72,7 +62,6 @@ p_true <- lapply(1:3, function(i) create_custom_heatmap(true_factors[[i]], show_
 
 # Color scale for Bias - 0 is white
 color_scale_bias <- scale_fill_gradient2(low = "red", mid = "white", high = "red", midpoint = 0, limits = common_scale_bias)
-
 # Color scale for MSE - 0 is white
 color_scale_mse <- scale_fill_gradient2(low = "lightgreen", mid = "white", high = "darkgreen", midpoint = 0, limits = common_scale_mse)
 
@@ -94,7 +83,6 @@ p_true <- lapply(1:3, function(i) {
     create_custom_heatmap(true_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left) + color_scale_true_est
   }
 })
-
 # Spatial Estimated Factors
 p_est <- lapply(1:3, function(i) {
   if (i == 2) {
@@ -103,7 +91,6 @@ p_est <- lapply(1:3, function(i) {
     create_custom_heatmap(est_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_left) + color_scale_true_est
   }
 })
-
 # Beta Estimated Factors
 p_est_beta <- lapply(1:3, function(i) {
   if (i == 2) {
@@ -112,7 +99,6 @@ p_est_beta <- lapply(1:3, function(i) {
     create_custom_heatmap(est_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_left) + color_scale_true_est
   }
 })
-
 # Spatial Biases Factors
 p_bias <- lapply(1:3, function(i) {
   if (i == 2) {
@@ -121,7 +107,6 @@ p_bias <- lapply(1:3, function(i) {
     create_custom_heatmap(bias_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_bias) + color_scale_bias
   }
 })
-
 # Beta Biases Factors
 p_bias_beta <- lapply(1:3, function(i) {
   if (i == 2) {
@@ -130,7 +115,6 @@ p_bias_beta <- lapply(1:3, function(i) {
     create_custom_heatmap(bias_factors_beta[[i]], show_legend = (i == 3), show_grid = TRUE, common_scale = common_scale_bias) + color_scale_bias
   }
 })
-
 # Spatial MSEs Factors
 p_mse <- lapply(1:3, function(i) {
   if (i == 2) {
@@ -139,7 +123,6 @@ p_mse <- lapply(1:3, function(i) {
     create_custom_heatmap(mse_factors[[i]], show_legend = FALSE, show_grid = TRUE, common_scale = common_scale_mse) + color_scale_mse
   }
 })
-
 # Beta MSEs Factors
 p_mse_beta <- lapply(1:3, function(i) {
   if (i == 2) {
@@ -156,7 +139,7 @@ final_plot <- (
     (p_est[[1]] | p_est[[2]] | p_est[[3]]) /
     (p_est_beta[[1]] | p_est_beta[[2]] | p_est_beta[[3]]) |
     
-    # Right side: Bias, Bias Beta, MSE, MSE Beta, with legends at the bottom
+    # Right side: Bias, Bias Beta, MSE, MSE Beta, with legends to the right
     (p_bias[[1]] | p_bias[[2]] | p_bias[[3]]) /
     (p_bias_beta[[1]] | p_bias_beta[[2]] | p_bias_beta[[3]]) /
     (p_mse[[1]] | p_mse[[2]] | p_mse[[3]]) /

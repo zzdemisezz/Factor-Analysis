@@ -158,6 +158,7 @@ create_custom_heatmap <- function(matrix_data, show_legend = TRUE, common_scale 
     ggtitle(title)  # Add optional title
 }
 
+# Not used
 create_factor_heatmap <- function(loadings_matrix, title = "True factors") {
   # Function to extract the legend from a ggplot object
   get_legend <- function(ggplot_obj) {

@@ -3,10 +3,7 @@ source("Scripts/Analysis/Final_Functions.R")
 library(xtable)
 library(dplyr)
 
-# results_old <- readRDS("results_old.rds")
-# results <- readRDS("results_new_2.rds")
-results_final <- readRDS("results_final2.rds")
-# results_new <- readRDS("results_beta_pxl.rds")
+results <- readRDS("results_5.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {
@@ -55,19 +52,16 @@ create_summary_table <- function(results_list) {
   return(results_df)
 }
 
-# Example usage:
-# summary_table_old <- create_summary_table(results_old)
-summary_table_final <- create_summary_table(results_final)
-
 # Print the summary table
+summary_table <- create_summary_table(results)
+round(summary_table, 4)
+# summary_table_old <- create_summary_table(results_old)
 # round(summary_table_old,4)
-round(summary_table_final, 4)
 
 # Convert the table to LaTeX code
-latex_code <- xtable(summary_table_final,digits = 4)
-
-# Print the LaTeX code
+latex_code <- xtable(summary_table,digits = 4)
 print(latex_code)
+
 stop()
 # Function to compare GAMMA to B_True for a given results list
 create_comparison_table <- function(results_list) {
@@ -132,6 +126,5 @@ create_comparison_table <- function(results_list) {
   return(comparison_df)
 }
 
-# Example usage:
-comparison_df <- create_comparison_table(results_final)
+comparison_df <- create_comparison_table(results)
 print(comparison_df)
