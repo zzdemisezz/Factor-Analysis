@@ -1,10 +1,13 @@
 source("Scripts/Analysis/loading-objects.R")
 
 # Specifying the directory results
-main_dir <- "/well/nichols/users/rht383/results_5"
+main_dir <- "/well/nichols/users/rht383/results_6"
 
 # Specify the directory where the result chunks will be saved
-chunks_dir <- "/well/nichols/users/rht383/chunks5"
+chunks_dir <- "/well/nichols/users/rht383/chunks6"
+if (!dir.exists(chunks_dir)) {
+  dir.create(chunks_dir, recursive = TRUE)
+}
 
 generate_subdir_paths <- function(main_dir) {
   # List all subdirectories under the main directory
@@ -53,6 +56,6 @@ for (rds_file in rds_files) {
 }
 
 # Save the combined result as a single .rds file
-saveRDS(all_analysis_results, file = "/well/nichols/users/rht383/dataframes/results_5.rds")
+saveRDS(all_analysis_results, file = "/well/nichols/users/rht383/dataframes/results_6.rds")
 # test <- readRDS("new_results_2.rds")
 # cat("All individual results have been combined and saved as 'final_combined_results.rds'.\n")

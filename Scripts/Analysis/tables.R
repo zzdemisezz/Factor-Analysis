@@ -3,7 +3,7 @@ source("Scripts/Analysis/Final_Functions.R")
 library(xtable)
 library(dplyr)
 
-results <- readRDS("Results/dataframes/results_5")
+results <- readRDS("Results/dataframes/results_5.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {
@@ -52,15 +52,34 @@ create_summary_table <- function(results_list) {
   return(results_df)
 }
 
+# Function to reorder rows based on strong, moderate, weak pattern
+reorder_by_suffix <- function(df) {
+  suffix_order <- c("strong", "moderate", "weak")
+  
+  df <- df %>%
+    as.data.frame() %>%
+    mutate(Structure = rownames(.),  # Store rownames as a column
+           Prefix = sub("-(strong|moderate|weak)", "", Structure),  # Everything before the suffix
+           Suffix = sub(".*-", "", Structure)) %>%
+    arrange(Prefix, factor(Suffix, levels = suffix_order)) %>%
+    select(-Prefix, -Suffix)
+  
+  rownames(df) <- df$Structure  # Restore the original rownames
+  df <- df %>% select(-Structure)  # Remove the temporary Structure column
+  
+  return(df)
+}
+
 # Print the summary table
 summary_table <- create_summary_table(results)
-round(summary_table, 4)
+summary_table <- round(reorder_by_suffix(summary_table), 4)
+summary_table
 # summary_table_old <- create_summary_table(results_old)
 # round(summary_table_old,4)
 
 # Convert the table to LaTeX code
-latex_code <- xtable(summary_table,digits = 4)
-print(latex_code)
+# latex_code <- xtable(summary_table,digits = 4)
+# print(latex_code)
 
 stop()
 # Function to compare GAMMA to B_True for a given results list

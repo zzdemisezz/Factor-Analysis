@@ -6,8 +6,10 @@ rm(list = ls())
 library("patchwork")
 source("Scripts/Analysis/Final_Functions.R")
 
-results <- readRDS("Results/dataframes/results_5")
-structure <- results$`hard-moderate`
+results <- readRDS("Results/dataframes/results_5.rds")
+# overlap2-small-weak and overlap3-large-weak
+structure <- results$`overlap2-large-strong`
+#structure <- results$`hard-moderate`
 
 matrices <- calculate_statistics(structure, type = "em_pxl")
 matrices_beta <- calculate_statistics(structure, type = "em_beta_pxl")
@@ -35,8 +37,8 @@ p5 <- create_custom_heatmap(matrices_beta$MSE_covariance, show_legend = TRUE, sh
 final_plot <- (p1 | p2 | p3) / (p4 | p5)
 # Display the final plot
 final_plot
-stop()
-ggsave("~/Downloads/covariances-overlap2-large-strong.png", width=16, height = 8)
+
+#ggsave("~/Downloads/covariances-overlap2-large-strong.png", width=16, height = 8)
 
 # Factors ####
 # Split loadings into submatrices
