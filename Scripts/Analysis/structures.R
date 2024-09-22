@@ -88,7 +88,7 @@ combined_plot <- wrap_plots(all_plots, ncol = 1)
 
 # Display the final combined plot
 combined_plot
-
+stop()
 # Save the final plot to fit a full Overleaf page (A4 size)
 # ggsave("~/Downloads/data_structures_10x10.png", combined_plot, 
 #        width = 8.27, height = 11.69, units = "in", dpi = 300)

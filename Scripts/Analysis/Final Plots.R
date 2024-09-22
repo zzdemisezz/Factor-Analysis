@@ -18,35 +18,6 @@ structure <- results$`hard-moderate`
 matrices <- calculate_statistics(structure, type = "em_pxl")
 matrices_beta <- calculate_statistics(structure, type = "em_beta_pxl")
 
-# Function to compare GAMMA to B_True for a specific dataframe and return indices of mismatches
-# compare_GAMMA_to_B_true <- function(dataframe, type = "em") {
-#   # Select the appropriate GAMMA_permuted list based on the type
-#   GAMMA_permuted_list <- switch(type,
-#                                 em = dataframe$GAMMA_permuted,
-#                                 em_beta = dataframe$GAMMA_permuted_beta,
-#                                 em_pxl = dataframe$GAMMA_permuted_pxl,
-#                                 em_beta_pxl = dataframe$GAMMA_permuted_beta_pxl,
-#                                 stop("Invalid type specified. Choose 'em', 'em_beta', or 'em_pxl'."))
-# 
-#   B_true <- dataframe$B_True[[1]]  # Assuming B_True is consistent across simulations
-# 
-#   # Compare each GAMMA_permuted matrix with B_True and get mismatch indices
-#   match_results <- sapply(GAMMA_permuted_list, function(GAMMA_permuted) {
-#     isTRUE(all.equal(GAMMA_permuted, B_true))
-#   })
-# 
-#   # Get the indices where there are no exact matches (FALSE values in match_results)
-#   mismatch_indices <- which(!match_results)
-# 
-#   return(mismatch_indices)
-# }
-# test <- compare_GAMMA_to_B_true(structure, type = "em")
-# test2 <- compare_GAMMA_to_B_true(structure, type = "em_beta")
-# length(test)
-# length(test2)
-# test
-# test2
-
 # Covariances ####
 # Common scale for the top 3 heatmaps (covariance matrices)
 common_scale_top <- range(c(matrices$Covariance_true, matrices$average_covariance, matrices_beta$average_covariance))
@@ -75,7 +46,7 @@ final_plot <- (p1 | p2 | p3) / (p4 | p5)
 
 # Display the final plot
 final_plot
-# # stop()
+stop()
 ggsave("~/Downloads/covariances-overlap2-large-strong.png", width=16, height = 8)
 
 # Factors ####
@@ -194,6 +165,36 @@ final_plot <- (
 
 # Display the final plot
 final_plot
-
+stop()
 ggsave("~/Downloads/loadings-hard-moderate.png", width = 8.27, height = 4.68, units = "in", dpi = 300)
 
+
+# Find matches ####
+# Function to compare GAMMA to B_True for a specific dataframe and return indices of mismatches
+# compare_GAMMA_to_B_true <- function(dataframe, type = "em") {
+#   # Select the appropriate GAMMA_permuted list based on the type
+#   GAMMA_permuted_list <- switch(type,
+#                                 em = dataframe$GAMMA_permuted,
+#                                 em_beta = dataframe$GAMMA_permuted_beta,
+#                                 em_pxl = dataframe$GAMMA_permuted_pxl,
+#                                 em_beta_pxl = dataframe$GAMMA_permuted_beta_pxl,
+#                                 stop("Invalid type specified. Choose 'em', 'em_beta', or 'em_pxl'."))
+# 
+#   B_true <- dataframe$B_True[[1]]  # Assuming B_True is consistent across simulations
+# 
+#   # Compare each GAMMA_permuted matrix with B_True and get mismatch indices
+#   match_results <- sapply(GAMMA_permuted_list, function(GAMMA_permuted) {
+#     isTRUE(all.equal(GAMMA_permuted, B_true))
+#   })
+# 
+#   # Get the indices where there are no exact matches (FALSE values in match_results)
+#   mismatch_indices <- which(!match_results)
+# 
+#   return(mismatch_indices)
+# }
+# test <- compare_GAMMA_to_B_true(structure, type = "em")
+# test2 <- compare_GAMMA_to_B_true(structure, type = "em_beta")
+# length(test)
+# length(test2)
+# test
+# test2
