@@ -3,7 +3,7 @@ source("Scripts/Analysis/Final_Functions.R")
 library(xtable)
 library(dplyr)
 
-results <- readRDS("results_5.rds")
+results <- readRDS("Results/dataframes/results_5")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias
 create_summary_table <- function(results_list) {

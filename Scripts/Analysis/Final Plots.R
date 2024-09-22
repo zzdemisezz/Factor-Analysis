@@ -6,10 +6,8 @@ rm(list = ls())
 library("patchwork")
 source("Scripts/Analysis/Final_Functions.R")
 
-results <- readRDS("results_beta_pxl.rds") # has iter and converged
+results <- readRDS("Results/dataframes/results_5")
 structure <- results$`hard-moderate`
-# results2 <- readRDS("results_final.rds")
-# structure <- results2$`overlap2-large-strong`
 
 matrices <- calculate_statistics(structure, type = "em_pxl")
 matrices_beta <- calculate_statistics(structure, type = "em_beta_pxl")
