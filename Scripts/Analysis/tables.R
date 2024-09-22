@@ -5,7 +5,7 @@ library(dplyr)
 
 # results_old <- readRDS("results_old.rds")
 # results <- readRDS("results_new_2.rds")
-results_final <- readRDS("results_final.rds")
+results_final <- readRDS("results_final2.rds")
 # results_new <- readRDS("results_beta_pxl.rds")
 
 # Function to create the summary table based on a results list, maybe to change this to also do var/bias

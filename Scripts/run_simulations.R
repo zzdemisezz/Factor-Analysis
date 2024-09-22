@@ -1,4 +1,5 @@
 # Function to run simulations for a specific data generator
+source("Scripts/run_em.R")
 run_simulations <- function(generator, num_simulations) {
   all_datasets <- vector("list", num_simulations)
   all_results_em <- vector("list", num_simulations)

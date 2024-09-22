@@ -1,10 +1,6 @@
 # Load necessary scripts and libraries
 source("Scripts/data_generation.R")
-source("Scripts/em.R")
-source("Scripts/em_pxl.R")
-source("Scripts/em_beta.R")
-source("Scripts/em_beta_pxl.R")
-source("Scripts/run_em.R")
+lapply(list.files("Scripts/algorithms", pattern = "\\.R$", full.names = TRUE), source)
 source("Scripts/run_simulations.R")
 
 # Command line arguments
@@ -46,7 +42,7 @@ if (is.null(generator)) {
 results <- run_simulations(generator, 1)
 
 # Create subfolder if it doesn't exist
-output_dir <- file.path("/well/nichols/users/rht383/results_final2", data_generator_name)
+output_dir <- file.path("/well/nichols/users/rht383/results_3", data_generator_name)
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
 }

@@ -1,6 +1,5 @@
 source("Scripts/data_generation.R")
-source("Scripts/em.R")
-source("Scripts/em_beta.R")
+lapply(list.files("Scripts/algorithms", pattern = "\\.R$", full.names = TRUE), source)
 source("Scripts/run_em.R")
 source("Scripts/run_simulations.R")
 
