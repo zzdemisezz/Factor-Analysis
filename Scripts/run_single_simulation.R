@@ -1,3 +1,4 @@
+# Only change directory for results in this file
 # Load necessary scripts and libraries
 source("Scripts/data_generation.R")
 lapply(list.files("Scripts/algorithms", pattern = "\\.R$", full.names = TRUE), source)
