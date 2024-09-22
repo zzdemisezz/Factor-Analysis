@@ -26,4 +26,4 @@ gen_index=$((index / num_simulations))
 sim_index=$((index % num_simulations + 1))
 
 # Run the R script with the appropriate arguments
-Rscript Scripts/run_single_simulation_DPE.R ${data_generators[$gen_index]} $sim_index
+Rscript Scripts/run_single_simulation.R ${data_generators[$gen_index]} $sim_index
